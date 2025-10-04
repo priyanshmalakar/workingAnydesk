@@ -1,4 +1,4 @@
-<ion-header>
+<!-- <ion-header>
     <ion-toolbar color="primary">
         <ion-title> {{ ' Select source ' | translate }} </ion-title>
         <ion-buttons slot="end">
@@ -23,4 +23,43 @@
                 onloadedmetadata="this.muted = true"></video>
         </div>
     </div>
+</ion-content> -->
+
+
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-title> {{ 'Select source' | translate }} </ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="toggleAV()">
+                <ion-icon [name]="isAVEnabled ? 'videocam-off' : 'videocam'"></ion-icon>
+            </ion-button>
+            <ion-button (click)="close()">
+                <ion-icon name="close"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+    <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
+        <div
+            *ngFor="let video of sources"
+            (click)="selectStream(video)"
+            class="transition-all hover:shadow-xl cursor-pointer rounded-xl bg-white video-container overflow-hidden">
+            <div class="title">{{ video.source.name | translate }}</div>
+            <video
+                muted
+                autoplay
+                [srcObject]="video.stream"
+                onloadedmetadata="this.muted = true"></video>
+        </div>
+    </div>
+
+    <!-- Local preview -->
+    <video
+        id="local-preview"
+        autoplay
+        muted
+        class="w-32 h-32 rounded-md shadow-lg fixed bottom-4 right-4 z-50"
+    ></video>
 </ion-content>

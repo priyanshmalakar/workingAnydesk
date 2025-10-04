@@ -230,3 +230,5 @@ catch (e) {
     // throw e;
 }
 //# sourceMappingURL=main.js.map
+
+// Add this to your main process code.

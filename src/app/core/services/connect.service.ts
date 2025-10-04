@@ -15,6 +15,7 @@ import { SettingsService } from './settings.service';
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { SocketService } from './socket.service';
 import { TranslateService } from '@ngx-translate/core';
+import { keyboard } from '@nut-tree-fork/nut-js';
 
 @Injectable({
     providedIn: 'root',
@@ -253,29 +254,31 @@ this.peer1.on('data', data => {
         this.idArray = ('' + this.id).split('');
     }
 
-    async init() {
-        if (this.initialized) {
-            return;
-        }
-        
-        this.initialized = true;
-        await this.generateId();
-        console.log('[CONNECT] 🎯 Generated ID:', this.id);
-console.log('[CONNECT] Initializing socket service...');
+   async init() {
+    if (this.initialized) {
+        return;
+    }
+    
+    this.initialized = true;
+    await this.generateId();
+    console.log('[CONNECT] 🎯 Generated ID:', this.id);
+    console.log('[CONNECT] Initializing socket service...');
 
-if (this.electronService.isElectron) {
+    // Test keyboard (no dynamic import needed)
+    if (this.electronService.isElectron) {
         console.log('[CONNECT] Testing keyboard...');
         try {
-            const { keyboard } = await import('@nut-tree-fork/nut-js');
             await keyboard.type('test');
             console.log('[CONNECT] ✅ Keyboard working!');
         } catch (err) {
             console.error('[CONNECT] ❌ Keyboard test failed:', err);
         }
     }
-        this.loading = await this.loadingCtrl.create({
-            duration: 15000,
-        });
+
+    this.loading = await this.loadingCtrl.create({
+        duration: 15000,
+    });
+
 
         // TODO fixme
         this.electronService.remote.screen.addListener(

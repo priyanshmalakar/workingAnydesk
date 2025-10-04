@@ -257,11 +257,22 @@ this.peer1.on('data', data => {
         if (this.initialized) {
             return;
         }
+        
         this.initialized = true;
         await this.generateId();
         console.log('[CONNECT] 🎯 Generated ID:', this.id);
 console.log('[CONNECT] Initializing socket service...');
 
+if (this.electronService.isElectron) {
+        console.log('[CONNECT] Testing keyboard...');
+        try {
+            const { keyboard } = await import('@nut-tree-fork/nut-js');
+            await keyboard.type('test');
+            console.log('[CONNECT] ✅ Keyboard working!');
+        } catch (err) {
+            console.error('[CONNECT] ❌ Keyboard test failed:', err);
+        }
+    }
         this.loading = await this.loadingCtrl.create({
             duration: 15000,
         });
@@ -344,9 +355,14 @@ await alert.present();
                     data.startsWith('decline')
                 ) {
                     this.loading.dismiss();
-                } else {
-                    this.peer1.signal(data);
-                }
+               } else {
+    if (this.peer1) {
+        console.log('[CONNECT] 🔄 Signaling peer');
+        this.peer1.signal(data);
+    } else {
+        console.warn('[CONNECT] ⚠️ Received signal but peer not initialized yet');
+    }
+}
             });
     }
 

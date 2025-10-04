@@ -155,53 +155,63 @@ this.peer1.on('connect', () => {
 });
 
 
-        this.peer1.on('data', data => {
-            if (data) {
-                try {
-                    const fileTransfer = data.toString();
-                    if (fileTransfer.substr(0, 5) === 'file-') {
-                        const fileID = fileTransfer.substr(5);
-                        this.spf
-                            .receive(this.peer1, fileID)
-                            .then((transfer: any) => {
-                                this.fileLoading = true;
-                                transfer.on('progress', p => {
-                                    console.log('progress', p);
-                                });
-                                transfer.on('done', file => {
-                                    this.fileLoading = false;
-                                    console.log('done', file);
-                                    const element = document.createElement('a');
-                                    element.href = URL.createObjectURL(file);
-                                    element.download = file.name;
-                                    element.click();
-                                });
-                            });
-                        this.peer1.send(`start-${fileID}`);
-                        return;
-                    }
-
-                    if (fileTransfer.substr(0, 10) === 'clipboard-') {
-                        const text = fileTransfer.substr(10);
-                        console.log('Test', text);
-                        this.electronService.clipboard.writeText(text);
-                        return;
-                    }
-
-                    let text = new TextDecoder('utf-8').decode(data);
-                    if (text.substring(0, 1) == '{') {
-                        text = JSON.parse(text);
-                       this.connectHelperService.handleKey({ key: text });
-                    } else if (text.substring(0, 1) == 's') {
-                        this.connectHelperService.handleScroll(text);
-                    } else {
-                        this.connectHelperService.handleMouse(text);
-                    }
-                } catch (error) {
-                    // console.log('error', error);
-                }
+this.peer1.on('data', data => {
+    if (data) {
+        try {
+            const fileTransfer = data.toString();
+            if (fileTransfer.substr(0, 5) === 'file-') {
+                const fileID = fileTransfer.substr(5);
+                this.spf
+                    .receive(this.peer1, fileID)
+                    .then((transfer: any) => {
+                        this.fileLoading = true;
+                        transfer.on('progress', p => {
+                            console.log('progress', p);
+                        });
+                        transfer.on('done', file => {
+                            this.fileLoading = false;
+                            console.log('done', file);
+                            const element = document.createElement('a');
+                            element.href = URL.createObjectURL(file);
+                            element.download = file.name;
+                            element.click();
+                        });
+                    });
+                this.peer1.send(`start-${fileID}`);
+                return;
             }
-        });
+
+            if (fileTransfer.substr(0, 10) === 'clipboard-') {
+                const text = fileTransfer.substr(10);
+                console.log('[CONNECT] 📋 Clipboard received:', text.substring(0, 50));
+                this.electronService.clipboard.writeText(text);
+                return;
+            }
+
+            // Parse the data
+            let text = new TextDecoder('utf-8').decode(data);
+            
+            // Check if it's JSON (keyboard input)
+            if (text.substring(0, 1) == '{') {
+                const keyData = JSON.parse(text);
+                console.log('[CONNECT] ⌨️ Keyboard event:', keyData);
+                
+                // Pass the parsed object directly
+                this.connectHelperService.handleKey(keyData);
+            } else if (text.substring(0, 1) == 's') {
+                // Scroll event
+                console.log('[CONNECT] 📜 Scroll event');
+                this.connectHelperService.handleScroll(text);
+            } else {
+                // Mouse event
+                console.log('[CONNECT] 🖱️ Mouse event');
+                this.connectHelperService.handleMouse(text);
+            }
+        } catch (error) {
+            console.error('[CONNECT] Error handling data:', error);
+        }
+    }
+});
     }
 
 

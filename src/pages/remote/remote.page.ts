@@ -1248,24 +1248,24 @@ if (this.electronService.isElectron) {
         this.peer2?.send(stringData);
     }
 
-    keydownListener(event: KeyboardEvent) {
-        if (!this.connected) return;
-        const data = {
-            t: 'k',
-            code: event.code,
-            keyCode: event.keyCode,
-            key: event.key,
-            shift: event.shiftKey,
-            control: event.ctrlKey,
-            alt: event.altKey,
-            meta: event.metaKey,
-        };
-        try {
-            this.peer2?.send(JSON.stringify(data));
-        } catch (err) {
-            console.error('send key error', err);
-        }
+ keydownListener(event: KeyboardEvent) {
+    if (!this.connected) return;
+    const data = {
+        t: 'k',
+        code: event.code,
+        keyCode: event.keyCode,
+        key: event.key,
+        shift: event.shiftKey,
+        control: event.ctrlKey,
+        alt: event.altKey,
+        meta: event.metaKey,
+    };
+    try {
+        this.peer2?.send(JSON.stringify(data));
+    } catch (err) {
+        console.error('send key error', err);
     }
+}
 
     scrollListener(event: WheelEvent) {
         if (!this.connected) return;

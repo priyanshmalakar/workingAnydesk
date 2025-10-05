@@ -1,4 +1,4 @@
-<div
+<!-- <div
     *ngIf="fileDrop"
     class="file-drop">
     <ion-icon name="document-outline"></ion-icon>
@@ -111,4 +111,85 @@
         autoplay
         id="video"
         [style.cursor]="cursor ? 'default' : 'none'"></video>
+</ion-content> -->
+
+
+<div *ngIf="fileDrop" class="file-drop">
+  <ion-icon name="document-outline"></ion-icon>
+</div>
+
+<!-- corrected file input change: pass $event so handler can read files -->
+<input class="hidden" #fileInput type="file" (change)="fileChangeEvent($event)" />
+
+<div class="connecting" *ngIf="!connected">
+  <ion-spinner></ion-spinner>
+</div>
+
+<!-- options toggle -->
+<ion-button class="option-dropdown" (click)="showOptions = !showOptions" [tp]="'Options'|translate">
+  <ion-icon *ngIf="!showOptions" name="chevron-down-outline"></ion-icon>
+  <ion-icon *ngIf="showOptions" name="chevron-up-outline"></ion-icon>
+</ion-button>
+
+<!-- Header with controls when options shown -->
+<ion-header *ngIf="showOptions" [@fadeInDownOnEnter] [@fadeOutUpOnLeave]>
+  <ion-toolbar color="primary" *ngIf="electronService.isElectron">
+    <ion-title class="flex items-center justify-center" *ngIf="!connected">
+      {{ 'Waiting for confirmation ...'|translate }}
+    </ion-title>
+
+    <ion-buttons slot="end">
+      <!-- Show mouse pointer checkbox -->
+      <ion-button (click)="cursor = !cursor" [tp]="'Show mouse pointer'|translate">
+        <!-- svg icon omitted for brevity -->
+        <ion-checkbox [(ngModel)]="cursor"></ion-checkbox>
+      </ion-button>
+
+      <!-- Send file -->
+      <ion-button (click)="fileInput.click()" [tp]="'Send file'|translate">
+        <ion-icon name="document-outline"></ion-icon>
+      </ion-button>
+
+      <!-- mic toggle -->
+      <ion-button (click)="toggleMic()" [tp]="'Microphone'|translate">
+        <ion-icon [name]="micEnabled ? 'mic' : 'mic-off'"></ion-icon>
+      </ion-button>
+
+      <!-- camera toggle -->
+      <ion-button (click)="toggleCam()" [tp]="'Camera'|translate">
+        <ion-icon [name]="camEnabled ? 'videocam' : 'videocam-off'"></ion-icon>
+      </ion-button>
+
+      <!-- stop local preview (optional) -->
+      <ion-button (click)="stopLocalStream()" [tp]="'Stop preview'|translate">
+        <ion-icon name="stop-circle-outline"></ion-icon>
+      </ion-button>
+
+      <!-- Close connection -->
+      <ion-button (click)="close()" [tp]="'Close connection'|translate">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false">
+  <div class="progress" *ngIf="fileProgress != 0 && fileProgress != 100">
+    <div class="inner-progress transition-all" [style.width.%]="fileProgress">
+      {{ getFileProgress(fileProgress) }}%
+    </div>
+  </div>
+
+  <div *ngIf="fileLoading" class="fileLoading" [tp]="'File is sent ...'|translate">
+    <ion-spinner [color]="'light'"></ion-spinner>
+  </div>
+
+  <!-- background blurred video from host -->
+  <video autoplay id="videobg" playsinline muted></video>
+
+  <!-- main remote video; audio will play if present on stream -->
+  <video autoplay id="video" playsinline [style.cursor]="cursor ? 'default' : 'none'"></video>
+
+  <!-- local preview video (muted) when camera enabled -->
+  <video *ngIf="localPreview" autoplay id="localPreview" muted playsinline></video>
 </ion-content>

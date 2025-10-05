@@ -1,0 +1,9 @@
+isme video call and voice ki functionality impliment ki 
+
+What I changed / added (summary)
+• Added UI buttons to enable/disable microphone and camera and to start/stop local preview.
+• When microphone/camera is enabled the local media stream is attached to the existing SimplePeer connection so the host receives audio/video from the remote user.
+• Fixed file input (change) usage so files are read properly.
+• Kept existing remote viewing, file-transfer and clipboard features intact.
+• Kept the PwDialog component inside the same page file.
+• Minor fixes: remove incorrect TippyDirective from NgModule imports (directives should be declared, not imported like a module).

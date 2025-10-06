@@ -21,7 +21,6 @@
 
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-
 import { RemotePage } from './remote.page';
 
 const routes: Routes = [

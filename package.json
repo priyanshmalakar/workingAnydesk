@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "homepage": "https://codext.de",
-"browser": {
+  "browser": {
     "@nut-tree-fork/nut-js": false,
     "bindings": false,
     "fs": false,
@@ -152,27 +152,25 @@
     "zone.js": "~0.13.1"
   },
   "build": {
-    
-  "appId": "com.codext.anydeskclone",
-  "productName": "AnyDeskClone",
-  "files": [
-    "dist/**/*",
-    "main.js",
-    "package.json"
-  ],
-  "directories": {
-    "output": "release"
-  },
-  "win": {
-    "target": "nsis"
-  },
-  "mac": {
-    "target": "dmg"
-  },
-  "linux": {
-    "target": "AppImage"
-  },
-  "publish": null
-}
-
+    "appId": "com.codext.anydeskclone",
+    "productName": "AnyDeskClone",
+    "files": [
+      "dist/**/*",
+      "main.js",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": "AppImage"
+    },
+    "publish": null
+  }
 }

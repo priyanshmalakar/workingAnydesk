@@ -1,13 +1,13 @@
 {
   "productName": "Remotecontrol Desktop",
-  "appId": "de.codext.remotecontrol-desktop",
+  "appId": "com.webzone.anydeskclone",
   "directories": {
     "output": "release/"
   },
   "publish": [
     {
       "provider": "generic",
-      "url": "https://ftp.codext.de/remotecontrol-desktop/released/"
+      "url": "/"
     }
   ],
   "files": [

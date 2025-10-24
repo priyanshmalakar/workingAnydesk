@@ -37,4 +37,12 @@ export class AddressBookService {
         );
         await this.save();
     }
+    async updateName(id: string, newName: string) {
+  const item = this.addressBook.find(adItem => adItem.id === id);
+  if (item) {
+    item.name = newName;
+    await this.save();
+  }
+}
+
 }

@@ -36,7 +36,7 @@ if (process.platform === 'linux') {
 
 autoUpdater.setFeedURL({
     provider: 'github',
-    owner: 'codext-remotecontrol',
+    owner: 'WebZone',
     repo: 'remotecontrol-desktop',
     private: false,
     releaseType: 'release',
@@ -81,7 +81,7 @@ hidden = args.some((val) => val === '--hidden');
 // eslint-disable-next-line @typescript-eslint/require-await
 async function createWindow(): Promise<Electron.BrowserWindow> {
   autoUpdater.checkForUpdates();
-  app.setAppUserModelId('de.codext.remotedesktop-control');
+  app.setAppUserModelId('de.webzone.remotedesktop-control');
   //  app.allowRendererProcessReuse = false;
 
   // Create the browser window.

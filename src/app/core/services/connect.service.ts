@@ -374,51 +374,7 @@ await alert.present();
         this.peer1.addStream(stream);
     }
 
-    // videoConnector() {
-    //     this.loading.dismiss();
-    //     const source = this.videoSource;
-    //     const stream = source.stream;
-    //     this.peer1 = new SimplePeer({
-    //         initiator: true,
-    //         stream: stream,
-    //         // channelName: this.id,
-    //         config: {
-    //             iceServers: [
-    //                 {
-    //                     urls: [
-    //                         'stun:turn.codext.de',
-    //                         'stun:stun.nextcloud.com:443',
-    //                     ],
-    //                 },
-    //                 {
-    //                     username: 'Z1VCyC6DDDrwtgeipeplGmJ0',
-    //                     credential:
-    //                         '8a630ce342e1ec3fb2b8dbc8eaa395f837038ddcc5',
-    //                     urls: [
-    //                         'turn:turn.codext.de:80?transport=udp',
-    //                         'turn:turn.codext.de:80?transport=tcp',
-    //                         'turns:turn.codext.de:443?transport=tcp',
-    //                     ],
-    //                 },
-    //             ],
-    //         },
-    //     });
-
-    //     this.peer1.on('signal', data => {
-    //         this.socketService.sendMessage(data);
-    //     });
-    //     this.peer1.on('error', () => {
-    //         this.reconnect();
-    //     });
-    //     this.peer1.on('close', () => {
-    //         this.reconnect();
-    //     });
-    //     this.peer1.on('connect', () => {
-    //         this.connected = true;
-    //         this.connectHelperService.showInfoWindow();
-    //         const win = this.electronService.window;
-    //         win.minimize();
-    //     });
+ 
 
 
     async reconnect() {

@@ -37,9 +37,6 @@ select:focus {
     --tw-ring-color: transparent;
 }
 
-input:focus {
-    outline: none;
-}
 
 button {
     outline: none;
@@ -53,18 +50,15 @@ ion-item {
     }
 }
 ion-button {
-  --background: #6D94C5; /* use your palette blue */
-  --color: #fff;         /* white text */
+  --background: #7197c7; /* use your palette blue */
+  --color: #d1d1d1;         /* white text */
   --border-radius: 12px; 
   --box-shadow: none;
   --background-activated: #5c7fa8; /* darker blue when pressed */
-  --background-hover: #7fa2ce;     /* lighter blue on hover */
+  --background-hover: #7fa2ce;     /* lighter blue on hoveesr */
 }
 
-ion-button::part(native) {
-  background: transparent !important;
-  box-shadow: none !important;
-}
+
 ion-item {
     border-radius: 10px;
 }

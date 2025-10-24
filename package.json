@@ -2,8 +2,8 @@
   "name": "remotecontrol-desktop",
   "version": "1.0.0",
   "description": "",
-  "homepage": "https://codext.de",
-"browser": {
+  "homepage": "https://google.com",
+  "browser": {
     "@nut-tree-fork/nut-js": false,
     "bindings": false,
     "fs": false,
@@ -14,8 +14,8 @@
     "crypto": false
   },
   "author": {
-    "name": "Codext GmbH",
-    "email": "info@codext.de"
+    "name": "WebZone",
+    "email": "info.webzone@gmail.com"
   },
   "main": "main.js",
   "private": true,
@@ -23,6 +23,7 @@
     "postinstall": "electron-builder install-app-deps && node ./scripts/fix.script.js",
     "ng": "ng",
     "start": "npm-run-all -p electron:serve ng:serve",
+     "dist": "npm run build:prod && electron-builder --win",
     "build": "npm run electron:serve-tsc && ng build --base-href ./",
     "build:dev": "npm run build -- -c dev",
     "build:prod": "npm run electron:serve-tsc && cross-env NODE_ENV=production ng build --configuration production --source-map=false",
@@ -152,27 +153,25 @@
     "zone.js": "~0.13.1"
   },
   "build": {
-    
-  "appId": "com.codext.anydeskclone",
-  "productName": "AnyDeskClone",
-  "files": [
-    "dist/**/*",
-    "main.js",
-    "package.json"
-  ],
-  "directories": {
-    "output": "release"
-  },
-  "win": {
-    "target": "nsis"
-  },
-  "mac": {
-    "target": "dmg"
-  },
-  "linux": {
-    "target": "AppImage"
-  },
-  "publish": null
-}
-
+    "appId": "com.webzone.anydeskclone",
+    "productName": "AnyDeskClone",
+    "files": [
+      "dist/**/*",
+      "main.js",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": "AppImage"
+    },
+    "publish": null
+  }
 }

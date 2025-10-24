@@ -58,7 +58,7 @@ if (process.platform === 'linux') {
 }
 electron_updater_1.autoUpdater.setFeedURL({
     provider: 'github',
-    owner: 'codext-remotecontrol',
+    owner: 'WebZone',
     repo: 'remotecontrol-desktop',
     private: false,
     releaseType: 'release',
@@ -100,7 +100,7 @@ function createWindow() {
         var iconPath, contextMenu;
         return __generator(this, function (_a) {
             electron_updater_1.autoUpdater.checkForUpdates();
-            electron_1.app.setAppUserModelId('de.codext.remotedesktop-control');
+            electron_1.app.setAppUserModelId('de.webzone.remotedesktop-control');
             //  app.allowRendererProcessReuse = false;
             // Create the browser window.
             win = new electron_1.BrowserWindow({

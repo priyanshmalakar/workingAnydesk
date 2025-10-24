@@ -6,6 +6,7 @@ import { HomePageModule } from '../pages/home/home.module';
 import { RemotePageModule } from '../pages/remote/remote.module';
 import { PageNotFoundComponent } from './shared/components';
 import { AddressBookPageModule } from '../pages/address-book/address-book.module';
+import { MultiRemotePageModule } from '../pages/multi-remote/multi-remote.module';
 
 const routes: Routes = [
     {
@@ -33,6 +34,10 @@ const routes: Routes = [
         path: 'address-book',
         loadChildren: () => AddressBookPageModule,
     },
+    {
+            path: 'multi-remote',
+           loadChildren: () => MultiRemotePageModule,
+        },
     {
         path: '**',
         component: PageNotFoundComponent,

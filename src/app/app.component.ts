@@ -130,6 +130,8 @@ export class AppComponent implements AfterViewInit {
     appPages = [
         { title: 'Home', url: '/home', icon: 'code-working-outline' },
         { title: 'Address book', url: '/address-book', icon: 'book-outline' },
+        { title: 'Multi Monitoring', url: '/multi-remote', icon: 'book-outline' },
+
     ];
 
     initDone: boolean = false;

@@ -80,6 +80,7 @@ export class ElectronService {
                 });
                 this.remote.globalShortcut.register('Control+Shift+I', () => {
                     // return false;
+                      this.window.webContents.openDevTools();
                 });
             } catch (error) {
                 console.error('Error initializing Electron services:', error);

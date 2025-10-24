@@ -16,11 +16,23 @@
     <div class="z-10 flex flex-col py-5 px-6 space-y-4 rounded-xl">
       <div class="flex items-center justify-between">
         <!-- ID badge -->
-        <span
-          class="h-10 min-w-[120px] rounded-md px-4 flex items-center justify-center font-semibold text-lg text-[#333] bg-[#CBDCEB]"
-        >
-          {{ addressBook.id }}
-        </span>
+      <div class="flex flex-col">
+  <span
+    class="h-10 min-w-[120px] rounded-md px-4 flex items-center justify-center font-semibold text-lg text-[#333] bg-[#CBDCEB]"
+  >
+    {{ addressBook.id }}
+  </span>
+
+  <!-- Editable name -->
+  <input
+    type="text"
+    [(ngModel)]="addressBook.name"
+    (blur)="updateLabel(addressBook.id, addressBook.name)"
+    placeholder="Enter label"
+    class="mt-2 border rounded-md text-white px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+  />
+</div>
+
 
         <!-- Connect button -->
         <ion-button

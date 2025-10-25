@@ -124,33 +124,46 @@
   <ion-spinner></ion-spinner>
 </div>
 
-<ion-button class="option-dropdown" (click)="showOptions = !showOptions" [tp]="'Options'|translate">
+<!-- Option toggle button -->
+<ion-button class="option-dropdown" (click)="showOptions = !showOptions" [title]="'Options'|translate">
   <ion-icon *ngIf="!showOptions" name="chevron-down-outline"></ion-icon>
   <ion-icon *ngIf="showOptions" name="chevron-up-outline"></ion-icon>
 </ion-button>
 
+<!-- Options header (always available) -->
 <ion-header *ngIf="showOptions" [@fadeInDownOnEnter] [@fadeOutUpOnLeave]>
-  <ion-toolbar color="primary" *ngIf="electronService.isElectron">
+  <ion-toolbar color="primary">
     <ion-title class="flex items-center justify-center" *ngIf="!connected">
       {{ 'Waiting for confirmation ...'|translate }}
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="cursor = !cursor" [tp]="'Show mouse pointer'|translate">
+      <!-- Show cursor toggle -->
+      <ion-button (click)="cursor = !cursor" [title]="'Show mouse pointer'|translate">
         <ion-checkbox [(ngModel)]="cursor"></ion-checkbox>
       </ion-button>
-      <ion-button (click)="fileInput.click()" [tp]="'Send file'|translate">
+
+      <!-- Send file -->
+      <ion-button (click)="fileInput.click()" [title]="'Send file'|translate">
         <ion-icon name="document-outline"></ion-icon>
       </ion-button>
-      <ion-button (click)="toggleMic()" [tp]="'Microphone'|translate">
+
+      <!-- Microphone toggle -->
+      <ion-button (click)="toggleMic()" [title]="'Microphone'|translate">
         <ion-icon [name]="micEnabled ? 'mic' : 'mic-off'"></ion-icon>
       </ion-button>
-      <ion-button (click)="toggleCam()" [tp]="'Camera'|translate">
+
+      <!-- Camera toggle -->
+      <ion-button (click)="toggleCam()" [title]="'Camera'|translate">
         <ion-icon [name]="camEnabled ? 'videocam' : 'videocam-off'"></ion-icon>
       </ion-button>
-      <ion-button (click)="stopLocalStream()" [tp]="'Stop preview'|translate">
+
+      <!-- Stop preview -->
+      <ion-button (click)="stopLocalStream()" [title]="'Stop preview'|translate">
         <ion-icon name="stop-circle-outline"></ion-icon>
       </ion-button>
-      <ion-button (click)="close()" [tp]="'Close connection'|translate">
+
+      <!-- Close -->
+      <ion-button (click)="close()" [title]="'Close connection'|translate">
         <ion-icon name="close"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -164,11 +177,16 @@
     </div>
   </div>
 
-  <div *ngIf="fileLoading" class="fileLoading" [tp]="'File is sent ...'|translate">
+  <div *ngIf="fileLoading" class="fileLoading" [title]="'File is sent ...'|translate">
     <ion-spinner [color]="'light'"></ion-spinner>
   </div>
 
+  <!-- Remote blurred background -->
   <video autoplay id="videobg" playsinline muted></video>
+
+  <!-- Remote main video (host screen or webcam) -->
   <video autoplay id="video" playsinline [style.cursor]="cursor ? 'default' : 'none'"></video>
+
+  <!-- Local preview (small) -->
   <video *ngIf="localPreview" autoplay id="localPreview" muted playsinline></video>
 </ion-content>

@@ -1319,26 +1319,6 @@ import { ElectronService } from '../../app/core/services/electron.service';
         <ion-title>{{ 'Enter Password' | translate }}</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content>
-      <div class="p-5">
-        <ion-input
-          [label]="'Password' | translate"
-          [(ngModel)]="pw"
-          label-placement="floating"
-          fill="solid"
-          placeholder="Enter text"></ion-input>
-      </div>
-    </ion-content>
-    <ion-footer>
-      <ion-toolbar>
-        <ion-button (click)="cancel()">
-          {{ 'Cancel' | translate }}
-        </ion-button>
-        <ion-button cdkFocusInitial (click)="connect()">
-          {{ 'Connect' | translate }}
-        </ion-button>
-      </ion-toolbar>
-    </ion-footer>
   `,
 })
 export class PwDialog {
@@ -1434,7 +1414,8 @@ export class RemotePage implements OnInit, OnDestroy {
         const file = f[i];
         const fileID = file.name + file.size;
         this.files[fileID] = file;
-        this.peer2.send('file-' + fileID);
+        // initiate file send negotiation
+        if (this.peer2) this.peer2.send('file-' + fileID);
       }
     }
   }
@@ -1494,7 +1475,7 @@ export class RemotePage implements OnInit, OnDestroy {
     const file = input.files[0];
     const fileID = file.name + file.size;
     this.files[fileID] = file;
-    this.peer2.send('file-' + fileID);
+    if (this.peer2) this.peer2.send('file-' + fileID);
     // clear input so same file can be selected again later
     input.value = '';
   }
@@ -1551,6 +1532,13 @@ export class RemotePage implements OnInit, OnDestroy {
 
     if (this.electronService.isElectron) {
       this.spf = new SimplePeerFiles();
+    } else {
+      // in browser we can still use SimplePeerFiles if included
+      try {
+        this.spf = new SimplePeerFiles();
+      } catch (err) {
+        console.warn('[REMOTE] SimplePeerFiles not available', err);
+      }
     }
 
     this.socketService.init();
@@ -1730,6 +1718,7 @@ export class RemotePage implements OnInit, OnDestroy {
           false
         );
       }
+      this.cdr.detectChanges();
     });
 
     this.peer2.on('close', () => {
@@ -1747,41 +1736,51 @@ export class RemotePage implements OnInit, OnDestroy {
 
       if (fileTransfer.substr(0, 5) === 'file-') {
         const fileID = fileTransfer.substr(5);
-        this.spf
-          .receive(this.peer2, fileID)
-          .then((transfer: any) => {
-            transfer.on('progress', p => {
-              console.log('progress', p);
+        if (this.spf) {
+          this.spf
+            .receive(this.peer2, fileID)
+            .then((transfer: any) => {
+              transfer.on('progress', p => {
+                console.log('progress', p);
+              });
+              transfer.on('done', done => {
+                console.log('done', done);
+              });
+            })
+            .catch(err => {
+              console.warn('[REMOTE] spf.receive error', err);
             });
-            transfer.on('done', done => {
-              console.log('done', done);
-            });
-          });
+        }
         this.peer2.send(`start-${fileID}`);
         return;
       } else if (fileTransfer.substr(0, 6) === 'start-') {
         this.fileLoading = true;
         this.cdr.detectChanges();
         const fileID = fileTransfer.substr(6);
-        this.transfer = await this.spf.send(this.peer2, fileID, this.files[fileID]);
-        this.transfer.on('progress', p => {
-          this.fileProgress = p;
-        });
-        this.transfer.on('done', done => {
-          this.fileLoading = false;
-          this.cdr.detectChanges();
-        });
-        this.transfer.on('cancel', done => {
-          this.fileLoading = false;
-          this.cdr.detectChanges();
-        });
-        this.transfer.on('cancelled', done => {
-          this.fileLoading = false;
-          this.cdr.detectChanges();
-        });
-        try {
-          this.transfer.start();
-        } catch (error) {}
+        if (this.spf) {
+          this.transfer = await this.spf.send(this.peer2, fileID, this.files[fileID]);
+          this.transfer.on('progress', p => {
+            this.fileProgress = p;
+            this.cdr.detectChanges();
+          });
+          this.transfer.on('done', done => {
+            this.fileLoading = false;
+            this.cdr.detectChanges();
+          });
+          this.transfer.on('cancel', done => {
+            this.fileLoading = false;
+            this.cdr.detectChanges();
+          });
+          this.transfer.on('cancelled', done => {
+            this.fileLoading = false;
+            this.cdr.detectChanges();
+          });
+          try {
+            this.transfer.start();
+          } catch (error) {
+            console.warn('[REMOTE] transfer.start failed', error);
+          }
+        }
         return;
       }
 
@@ -1806,6 +1805,7 @@ export class RemotePage implements OnInit, OnDestroy {
         this.stopLocalStream();
       }
     }
+    this.cdr.detectChanges();
   }
 
   async toggleCam() {
@@ -1822,6 +1822,7 @@ export class RemotePage implements OnInit, OnDestroy {
         this.stopLocalStream();
       }
     }
+    this.cdr.detectChanges();
   }
 
   // start local stream with constraints, merge with existing stream if needed
@@ -1876,37 +1877,46 @@ export class RemotePage implements OnInit, OnDestroy {
 
   // attach local stream to peer: either by replacing tracks on RTCPeerConnection or by addStream (SimplePeer supports addTrack/addStream)
   _attachLocalStreamToPeer() {
-    if (!this.peer2) return;
+    if (!this.peer2 || !this.localStream) return;
     try {
       // Try modern approach: addTrack to existing peer's internal stream
       // SimplePeer exposes _pc (RTCPeerConnection) internally. We'll attempt safe operations.
       const pc: RTCPeerConnection = (this.peer2 as any)._pc;
-      if (!pc) return;
+      if (!pc) {
+        // fallback: try simple-peer addStream
+        try {
+          (this.peer2 as any).addStream(this.localStream);
+        } catch (e) {
+          console.warn('[REMOTE] no RTCPeerConnection exposed, addStream failed', e);
+        }
+        return;
+      }
 
-      // remove existing senders for audio/video then add new tracks
-      // stop existing senders only if they were from localStream
-      const localTracks = this.localStream ? this.localStream.getTracks() : [];
-      // remove senders of same kind
+      // remove existing senders for audio/video if needed
       pc.getSenders().forEach(sender => {
         if (!sender.track) return;
-        if (sender.track.kind === 'audio' && !this.micEnabled) {
-          try { pc.removeTrack(sender); } catch (e) {}
-        } else if (sender.track.kind === 'video' && !this.camEnabled) {
-          try { pc.removeTrack(sender); } catch (e) {}
+        try {
+          // if user disabled a track kind, remove it
+          if (sender.track.kind === 'audio' && !this.micEnabled) {
+            pc.removeTrack(sender);
+          } else if (sender.track.kind === 'video' && !this.camEnabled) {
+            pc.removeTrack(sender);
+          }
+        } catch (e) {
+          // ignore
         }
       });
 
       // add tracks if enabled
+      const localTracks = this.localStream.getTracks();
       localTracks.forEach(track => {
-        // avoid duplicate tracks
         const already = pc.getSenders().some(s => s.track && s.track.kind === track.kind);
-        if (!already) {
+        if (!already && ((track.kind === 'audio' && this.micEnabled) || (track.kind === 'video' && this.camEnabled))) {
           try {
             pc.addTrack(track, this.localStream);
           } catch (err) {
             console.warn('[REMOTE] addTrack failed, trying addStream fallback', err);
             try {
-              // fallback: simple-peer addStream (older API)
               (this.peer2 as any).addStream(this.localStream);
             } catch (e) {
               console.warn('[REMOTE] fallback addStream failed', e);
@@ -1914,6 +1924,9 @@ export class RemotePage implements OnInit, OnDestroy {
           }
         }
       });
+
+      // Some browsers/peers need negotiation after adding tracks. SimplePeer should handle internal negotiation when addStream/addTrack used,
+      // but if you see no audio/video on host, consider recreating offer/answer flow or using peer2.addStream as primary method.
     } catch (err) {
       console.warn('[REMOTE] _attachLocalStreamToPeer error', err);
       // fallback to simple-peer addStream if available
@@ -1940,8 +1953,6 @@ export class RemotePage implements OnInit, OnDestroy {
       if (localVideo) {
         localVideo.srcObject = stream;
         localVideo.play().catch(() => {});
-      } else {
-        // create one if not present in DOM (but our template has it)
       }
     } catch (err) {
       console.warn('[REMOTE] attachLocalPreview failed', err);

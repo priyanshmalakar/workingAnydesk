@@ -373,7 +373,7 @@ export class SettingsPage implements OnInit {
         private translate: TranslateService,
         private actionSheetCtrl: ActionSheetController,
         public settingsService: SettingsService,
-        private connectService: ConnectService
+        public connectService: ConnectService  // Changed from private to public
     ) {}
 
     ngOnInit() {
@@ -492,5 +492,12 @@ export class SettingsPage implements OnInit {
         } catch (err) {
             console.warn('changeAutoStart error', err);
         }
+    }
+
+    // Add the missing screenSelect method
+    async screenSelect(hidden?: boolean, show?: boolean) {
+        // Implement your screen selection logic here
+        console.log('Screen select called', hidden, show);
+        // Add your actual screen selection implementation
     }
 }

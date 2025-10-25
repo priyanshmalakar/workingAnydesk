@@ -153,8 +153,8 @@
     "zone.js": "~0.13.1"
   },
   "build": {
-    "appId": "com.webzone.anydeskclone",
-    "productName": "AnyDeskClone",
+    "appId": "com.webzone.MyRemoteAppSetup",
+    "productName": "MyRemoteAppSetup",
     "files": [
       "dist/**/*",
       "main.js",
@@ -164,7 +164,8 @@
       "output": "release"
     },
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "publisherName": "WebZone Technologies"
     },
     "mac": {
       "target": "dmg"

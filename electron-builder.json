@@ -1,6 +1,6 @@
 {
-  "productName": "Remotecontrol Desktop",
-  "appId": "com.webzone.anydeskclone",
+  "productName": "WebZone Connect",
+  "appId": "com.webzone.remotecontrol",
   "directories": {
     "output": "release/"
   },
@@ -37,8 +37,12 @@
   ],
   "win": {
     "icon": "dist/assets/icons",
-    "requestedExecutionLevel": "requireAdministrator",
-    "target": ["nsis"]
+    "requestedExecutionLevel": "asInvoker",
+    "target": ["nsis"],
+    "signingHashAlgorithms": ["sha256"],
+    "publisherName": "WebZone Technologies",
+    "certificateFile": "build/codesign/cert.pfx",
+    "certificatePassword": "YOUR_PASSWORD"
   },
   "nsis": {
     "allowElevation": true,
@@ -51,7 +55,6 @@
     "createDesktopShortcut": true,
     "include": "build/installer.nsh"
   },
-  "portable": {},
   "mac": {
     "icon": "dist/assets/icons",
     "target": ["dmg"]

@@ -309,6 +309,8 @@ this.peer1.on('data', data => {
             .subscribe(async (data: any) => {
            console.log('[CONNECT] 📨 Socket message received:', typeof data, data);
                 if (typeof data == 'string' && data == 'hi') {
+                    if (this.dialog) return; 
+                     this.dialog = true;
                       console.log('[CONNECT] 👋 Received connection request');
                     this.sendScreenSize();
 
@@ -322,6 +324,7 @@ this.peer1.on('data', data => {
                         win.restore();
 
                         const result = await this.askForConnectPermission();
+                         this.dialog = false;
 
                         if (!result) {
                             this.socketService.sendMessage('decline');
